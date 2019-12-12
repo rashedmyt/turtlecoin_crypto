@@ -11,8 +11,11 @@ jobs:
         with:
           java-version: 1.8
       - uses: subosito/flutter-action@v1
+      - run: flutter doctor -v
+      - run: flutter pub get
       - run: |
-          flutter pub get
+            cd example
+            flutter build -v apk --debug --split-per-abi
+      - run: |
           cd example
-          flutter build -v apk --debug --split-per-abi
           flutter build -v ios --debug --no-codesign

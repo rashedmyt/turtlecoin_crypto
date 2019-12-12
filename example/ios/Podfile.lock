@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - turtlecoin_crypto (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - turtlecoin_crypto (from `.symlinks/plugins/turtlecoin_crypto/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  turtlecoin_crypto:
+    :path: ".symlinks/plugins/turtlecoin_crypto/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  turtlecoin_crypto: c0f9f1b2090705d70453daf28b5e657173c001bb
+
+PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
+
+COCOAPODS: 1.8.4

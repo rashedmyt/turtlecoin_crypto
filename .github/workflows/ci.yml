@@ -13,9 +13,11 @@ jobs:
       - uses: subosito/flutter-action@v1
       - run: flutter doctor -v
       - run: flutter pub get
-      - run: |
+      - name: Android Debug Build
+        run: |
             cd example
             flutter build -v apk --debug --split-per-abi
-      - run: |
+      - name: iOS Debug Build
+        run: |
           cd example
           flutter build -v ios --debug --no-codesign

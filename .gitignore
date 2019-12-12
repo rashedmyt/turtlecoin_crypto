@@ -1,0 +1,13 @@
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+
+# Android Studio
+.idea
+
+# Visual Studio Code
+.vscode

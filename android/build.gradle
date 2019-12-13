@@ -33,7 +33,20 @@ android {
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cFlags "-O3"
+                cppFlags "-O3", "-std=c++17"
+            }
+        }
     }
+
+    externalNativeBuild {
+        cmake {
+            path file("CMakeLists.txt")
+        }
+    }
+
     lintOptions {
         disable 'InvalidPackage'
     }

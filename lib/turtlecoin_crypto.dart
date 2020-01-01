@@ -29,3 +29,5 @@ KeyPair generateKeys() {
     secretKey: SecretKey.fromNative(res.ref.secretKey.ref),
   );
 }
+
+// TODO: Add Remaining methods (Its late night)

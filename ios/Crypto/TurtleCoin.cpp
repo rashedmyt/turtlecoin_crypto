@@ -13,8 +13,8 @@ Native::KeyDerivation* GenerateKeyDerivation(
         const Native::PublicKey* nativeTxPublicKey,
         const Native::SecretKey* nativePrivateViewKey)
 {
-    Crypto::PublicKey  transactionPublicKey = Crypto::PublicKey();
-    Crypto::SecretKey privateViewKey = Crypto::SecretKey();
+    Crypto::PublicKey  transactionPublicKey;
+    Crypto::SecretKey privateViewKey;
 
     std::copy(nativeTxPublicKey->data,nativeTxPublicKey->data+32,transactionPublicKey.data);
     std::copy(nativePrivateViewKey->data,nativePrivateViewKey->data+32,privateViewKey.data);
@@ -34,8 +34,8 @@ Native::PublicKey* UnDerivePublicKey(
         const uint64_t outputIndex,
         const Native::PublicKey* nativeDerivedKey)
 {
-    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
-    Crypto::PublicKey derivedKey = Crypto::PublicKey();
+    Crypto::KeyDerivation derivation;
+    Crypto::PublicKey derivedKey;
 
     std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
     std::copy(nativeDerivedKey->data,nativeDerivedKey->data+32,derivedKey.data);
@@ -55,8 +55,8 @@ Native::SecretKey* DeriveSecretKey(
         const uint64_t outputIndex,
         const Native::SecretKey* nativePrivateSpendKey)
 {
-    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
-    Crypto::SecretKey base = Crypto::SecretKey();
+    Crypto::KeyDerivation derivation;
+    Crypto::SecretKey base;
 
     std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
     std::copy(nativePrivateSpendKey->data,nativePrivateSpendKey->data+32,base.data);
@@ -76,8 +76,8 @@ Native::PublicKey* DerivePublicKey(
         const uint64_t outputIndex,
         const Native::PublicKey* nativeBase)
 {
-    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
-    Crypto::PublicKey base = Crypto::PublicKey();
+    Crypto::KeyDerivation derivation;
+    Crypto::PublicKey base;
 
     std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
     std::copy(nativeBase->data,nativeBase->data+32,base.data);
@@ -107,7 +107,7 @@ Native::KeyPair* GenerateKeys() {
 
 extern "C" __attribute__((visibility("default"))) __attribute__((used))
 Native::SecretKey* GenerateViewFromSpend(Native::SecretKey* nativeSpend) {
-    Crypto::SecretKey spend = Crypto::SecretKey();
+    Crypto::SecretKey spend;
     std::copy(nativeSpend->data,nativeSpend->data+32,spend.data);
 
     Crypto::SecretKey secretViewKey;

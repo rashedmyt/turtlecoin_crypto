@@ -31,6 +31,20 @@ class SecretKey {
   }
 }
 
+class KeyDerivation {
+  Uint8List data;
+
+  KeyDerivation({this.data}) {
+    if (data == null) {
+      data = Uint8List(32);
+    }
+  }
+
+  factory KeyDerivation.fromNative(NKeyDerivation native) {
+    return KeyDerivation(data: native.data.asTypedList(32));
+  }
+}
+
 class KeyPair {
   PublicKey publicKey;
   SecretKey secretKey;

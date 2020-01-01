@@ -1,7 +1,7 @@
 #include "crypto.h"
 #include "TurtleCoin.h"
 
-#include <stdint.h>
+#include <cstdint>
 
 extern "C" __attribute__((visibility("default"))) __attribute__((used))
 int32_t hello() {
@@ -9,6 +9,121 @@ int32_t hello() {
 }
 
 extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::KeyDerivation* GenerateKeyDerivation(
+        const Native::PublicKey* nativeTxPublicKey,
+        const Native::SecretKey* nativePrivateViewKey)
+{
+    Crypto::PublicKey  transactionPublicKey = Crypto::PublicKey();
+    Crypto::SecretKey privateViewKey = Crypto::SecretKey();
+
+    std::copy(nativeTxPublicKey->data,nativeTxPublicKey->data+32,transactionPublicKey.data);
+    std::copy(nativePrivateViewKey->data,nativePrivateViewKey->data+32,privateViewKey.data);
+
+    Crypto::KeyDerivation derivation;
+    Crypto::generate_key_derivation(transactionPublicKey, privateViewKey, derivation);
+
+    auto nativeDerivation = new Native::KeyDerivation();
+    std::copy(std::begin(derivation.data),std::end(derivation.data),nativeDerivation->data);
+
+    return nativeDerivation;
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::PublicKey* UnDerivePublicKey(
+        const Native::KeyDerivation* nativeDerivation,
+        const uint64_t outputIndex,
+        const Native::PublicKey* nativeDerivedKey)
+{
+    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
+    Crypto::PublicKey derivedKey = Crypto::PublicKey();
+
+    std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
+    std::copy(nativeDerivedKey->data,nativeDerivedKey->data+32,derivedKey.data);
+
+    Crypto::PublicKey base;
+    Crypto::underive_public_key(derivation,outputIndex,derivedKey,base);
+
+    auto nativeBase = new Native::PublicKey();
+    std::copy(std::begin(base.data),std::end(base.data),nativeBase->data);
+
+    return nativeBase;
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::SecretKey* DeriveSecretKey(
+        const Native::KeyDerivation* nativeDerivation,
+        const uint64_t outputIndex,
+        const Native::SecretKey* nativePrivateSpendKey)
+{
+    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
+    Crypto::SecretKey base = Crypto::SecretKey();
+
+    std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
+    std::copy(nativePrivateSpendKey->data,nativePrivateSpendKey->data+32,base.data);
+
+    Crypto::SecretKey derivedKey;
+    Crypto::derive_secret_key(derivation,outputIndex,base,derivedKey);
+
+    auto nativeDerivedKey = new Native::SecretKey();
+    std::copy(std::begin(base.data),std::end(base.data),nativeDerivedKey->data);
+
+    return nativeDerivedKey;
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::PublicKey* DerivePublicKey(
+        const Native::KeyDerivation* nativeDerivation,
+        const uint64_t outputIndex,
+        const Native::PublicKey* nativeBase)
+{
+    Crypto::KeyDerivation derivation = Crypto::KeyDerivation();
+    Crypto::PublicKey base = Crypto::PublicKey();
+
+    std::copy(nativeDerivation->data,nativeDerivation->data+32,derivation.data);
+    std::copy(nativeBase->data,nativeBase->data+32,base.data);
+
+    Crypto::PublicKey derivedKey;
+    Crypto::underive_public_key(derivation,outputIndex,base,derivedKey);
+
+    auto nativeDerivedKey = new Native::PublicKey();
+    std::copy(std::begin(derivedKey.data),std::end(derivedKey.data),nativeDerivedKey->data);
+
+    return nativeDerivedKey;
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::KeyPair* GenerateKeys() {
+    Crypto::PublicKey publicKey;
+    Crypto::SecretKey secretKey;
+
+    Crypto::generate_keys(publicKey,secretKey);
+
+    auto nativeKeyPair = new Native::KeyPair();
+    std::copy(std::begin(publicKey.data),std::end(publicKey.data),nativeKeyPair->publicKey->data);
+    std::copy(std::begin(secretKey.data),std::end(secretKey.data),nativeKeyPair->secretKey->data);
+
+    return nativeKeyPair;
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
+Native::SecretKey* GenerateViewFromSpend(Native::SecretKey* nativeSpend) {
+    Crypto::SecretKey spend = Crypto::SecretKey();
+    std::copy(nativeSpend->data,nativeSpend->data+32,spend.data);
+
+    Crypto::SecretKey secretViewKey;
+
+    Crypto::generateViewFromSpend(spend,secretViewKey);
+
+    auto nativeSecretViewKey = new Native::SecretKey();
+    std::copy(std::begin(secretViewKey.data),std::end(secretViewKey.data),nativeSecretViewKey->data);
+
+    return nativeSecretViewKey;
+}
+
+// TODO: Wrapper for generateRingSignatures
+// TODO: Wrapper for checkRingSignature
+
+// TODO: Remove Leftovers
 bool GenerateRingSignatures(
     const Crypto::Hash prefixHash,
     const Crypto::KeyImage keyImage,
@@ -23,18 +138,6 @@ bool GenerateRingSignatures(
     return success;
 }
 
-extern "C" __attribute__((visibility("default"))) __attribute__((used))
-Crypto::KeyDerivation generateKeyDerivation(
-    const Crypto::PublicKey transactionPublicKey,
-    const Crypto::SecretKey privateViewKey)
-{
-    Crypto::KeyDerivation derivation;
-    Crypto::generate_key_derivation(transactionPublicKey, privateViewKey, derivation);
-
-    return derivation;
-}
-
-extern "C" __attribute__((visibility("default"))) __attribute__((used))
 Crypto::KeyImage generateKeyImage(
     const Crypto::PublicKey publicEphemeral,
     const Crypto::SecretKey privateEphemeral)
@@ -45,31 +148,6 @@ Crypto::KeyImage generateKeyImage(
     return keyImage;
 }
 
-extern "C" __attribute__((visibility("default"))) __attribute__((used))
-Crypto::SecretKey deriveSecretKey(
-    const Crypto::KeyDerivation derivation,
-    const size_t outputIndex,
-    const Crypto::SecretKey privateSpendKey)
-{
-    Crypto::SecretKey secretKey;
-    Crypto::derive_secret_key(derivation, outputIndex, privateSpendKey, secretKey);
-
-    return secretKey;
-}
-
-extern "C" __attribute__((visibility("default"))) __attribute__((used))
-Crypto::PublicKey derivePublicKey(
-    const Crypto::KeyDerivation derivation,
-    const size_t outputIndex,
-    const Crypto::PublicKey publicSpendKey)
-{
-    Crypto::PublicKey derivedKey;
-    Crypto::derive_public_key(derivation, outputIndex, publicSpendKey, derivedKey);
-
-    return derivedKey;
-}
-
-extern "C" __attribute__((visibility("default"))) __attribute__((used))
 std::tuple<Crypto::PublicKey, TransactionInput>* processBlockOutputs(
     const WalletBlockInfo &block,
     const Crypto::SecretKey &privateViewKey,
@@ -117,7 +195,7 @@ void processTransactionOutputs(
     {
         Crypto::PublicKey derivedSpendKey;
 
-        /* Derive the public spend key from the transaction, using the previous 
+        /* Derive the public spend key from the transaction, using the previous
            derivation */
         Crypto::underive_public_key(
             derivation, outputIndex, output.key, derivedSpendKey);
@@ -163,3 +241,4 @@ void processTransactionOutputs(
         outputIndex++;
     }
 }
+

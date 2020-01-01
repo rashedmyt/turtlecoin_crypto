@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:convert/convert.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:turtlecoin_crypto/turtlecoin_crypto.dart';
 
@@ -48,9 +49,21 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Running on: ${fromKeys()}\n'),
         ),
       ),
     );
+  }
+
+  String fromKeys() {
+    final KeyPair res = generateKeys();
+    String ans = "";
+
+    ans += "\nPublic Key:\n";
+    ans += hex.encode(res.publicKey.data);
+    ans += "\nSecretKey\n";
+    ans += hex.encode(res.secretKey.data);
+
+    return ans;
   }
 }

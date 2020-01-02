@@ -15,7 +15,7 @@ final Pointer<NKeyPair> Function() nativeGenerateKeys = cryptoLib
     .asFunction();
 
 final Pointer<NKeyDerivation> Function(Pointer<NPublicKey>, Pointer<NSecretKey>)
-    nativeKeyDerivation = cryptoLib
+    nativeGenerateKeyDerivation = cryptoLib
         .lookup<
             NativeFunction<
                 Pointer<NKeyDerivation> Function(Pointer<NPublicKey>,

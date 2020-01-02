@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 import 'package:turtlecoin_crypto/src/crypto.dart';
 import 'package:turtlecoin_crypto/src/native_types.dart';
@@ -30,4 +31,28 @@ KeyPair generateKeys() {
   );
 }
 
+KeyDerivation generateKeyDerivation(
+    PublicKey txPublicKey, SecretKey privateViewKey) {
+  Pointer<NPublicKey> nPublicKey =
+      allocate<NPublicKey>(count: sizeOf<NPublicKey>());
+  nPublicKey.ref.data = txPublicKey.toNative().data;
+  Pointer<NSecretKey> nSecretKey =
+      allocate<NSecretKey>(count: sizeOf<NSecretKey>());
+  nSecretKey.ref.data = privateViewKey.toNative().data;
+
+  final Pointer<NKeyDerivation> res =
+      nativeGenerateKeyDerivation(nPublicKey, nSecretKey);
+
+  return KeyDerivation.fromNative(res.ref);
+}
+
+SecretKey generateViewFromSpend(SecretKey spend) {
+  Pointer<NSecretKey> nSpend =
+      allocate<NSecretKey>(count: sizeOf<NSecretKey>());
+  nSpend.ref.data = spend.toNative().data;
+
+  final Pointer<NSecretKey> res = nativeGenerateViewFromSpend(nSpend);
+
+  return SecretKey.fromNative(res.ref);
+}
 // TODO: Add Remaining methods (Its late night)

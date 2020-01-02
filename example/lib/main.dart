@@ -59,10 +59,14 @@ class _MyAppState extends State<MyApp> {
     final KeyPair res = generateKeys();
     String ans = "";
 
-    ans += "\nPublic Key:\n";
-    ans += hex.encode(res.publicKey.data);
-    ans += "\nSecretKey\n";
+    ans += "\nSecretSpendKey\n";
     ans += hex.encode(res.secretKey.data);
+
+    final SecretKey viewSecret = generateViewFromSpend(res.secretKey);
+    ans += "\nSecretViewKey\n";
+    ans += hex.encode(viewSecret.data);
+
+    debugPrint(ans);
 
     return ans;
   }

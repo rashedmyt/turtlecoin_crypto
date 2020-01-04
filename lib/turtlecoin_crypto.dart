@@ -55,4 +55,45 @@ SecretKey generateViewFromSpend(SecretKey spend) {
 
   return SecretKey.fromNative(res.ref);
 }
-// TODO: Add Remaining methods (Its late night)
+
+PublicKey unDerivePublicKey(
+    KeyDerivation derivation, int outputIndex, PublicKey derivedKey) {
+  Pointer<NKeyDerivation> nKeyDerivation =
+      allocate<NKeyDerivation>(count: sizeOf<NKeyDerivation>());
+  nKeyDerivation.ref.data = derivation.toNative().data;
+  Pointer<NPublicKey> nDerivedKey =
+      allocate<NPublicKey>(count: sizeOf<NPublicKey>());
+  nDerivedKey.ref.data = derivedKey.toNative().data;
+
+  final Pointer<NPublicKey> res =
+      nativeUnDerivePublicKey(nKeyDerivation, outputIndex, nDerivedKey);
+  return PublicKey.fromNative(res.ref);
+}
+
+PublicKey derivePublicKey(
+    KeyDerivation derivation, int outputIndex, PublicKey base) {
+  Pointer<NKeyDerivation> nKeyDerivation =
+      allocate<NKeyDerivation>(count: sizeOf<NKeyDerivation>());
+  nKeyDerivation.ref.data = derivation.toNative().data;
+  Pointer<NPublicKey> nDerivedKey =
+      allocate<NPublicKey>(count: sizeOf<NPublicKey>());
+  nDerivedKey.ref.data = base.toNative().data;
+
+  final Pointer<NPublicKey> res =
+      nativeDerivePublicKey(nKeyDerivation, outputIndex, nDerivedKey);
+  return PublicKey.fromNative(res.ref);
+}
+
+SecretKey deriveSecretKey(
+    KeyDerivation derivation, int outputIndex, SecretKey privateSpendKey) {
+  Pointer<NKeyDerivation> nKeyDerivation =
+      allocate<NKeyDerivation>(count: sizeOf<NKeyDerivation>());
+  nKeyDerivation.ref.data = derivation.toNative().data;
+  Pointer<NSecretKey> nSpendKey =
+      allocate<NSecretKey>(count: sizeOf<NSecretKey>());
+  nSpendKey.ref.data = privateSpendKey.toNative().data;
+
+  final Pointer<NSecretKey> res =
+      nativeDeriveSecretKey(nKeyDerivation, outputIndex, nSpendKey);
+  return SecretKey.fromNative(res.ref);
+}

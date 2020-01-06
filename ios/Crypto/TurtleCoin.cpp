@@ -12,12 +12,12 @@ extern "C" __attribute__((visibility("default"))) __attribute__((used))
 Native::Test** TestDoublePointer() {
     Native::Test** res = new Native::Test *[5];
 
-    for (int i = 0; i < 5; i++) {
-        auto temp = new Native::Test();
-        temp->data = i+10;
-
-        *(res + i * sizeof(Native::Test*)) = temp;
+    for (int i = 0; i < 4; i++) {
+        res[i] = new Native::Test();
+        res[i]->data = i*2+10;
     }
+
+    res[4] = nullptr;
 
     return res;
 }

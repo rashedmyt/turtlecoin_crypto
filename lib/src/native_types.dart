@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
 class NTest extends Struct {
-  @Int64()
+  @Int32()
   int data;
 
   factory NTest.allocate(int data) => allocate<NTest>().ref..data=data;

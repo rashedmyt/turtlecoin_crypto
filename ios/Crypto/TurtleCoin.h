@@ -14,7 +14,7 @@ namespace Native
     };
 
     struct Test {
-        int data;
+        int32_t data;
 
         Test() {
             data = 0;

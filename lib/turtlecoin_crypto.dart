@@ -99,12 +99,14 @@ SecretKey deriveSecretKey(
 }
 
 List<int> testNative() {
-  Pointer<Pointer<NTest>> res = nativeTest();
+  final res = nativeTest();
   List<int> data = List<int>();
+  var i = 0;
 
-  while (res != nullptr) {
-    data.add(res.value.ref.data);
-    res = res.elementAt(1);
+  while (true) {
+    final temp = res.elementAt(i++).value;
+    if (temp == nullptr) break;
+    data.add(temp.ref.data);
   }
 
   return data;

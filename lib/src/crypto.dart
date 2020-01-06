@@ -10,6 +10,11 @@ final DynamicLibrary cryptoLib = Platform.isAndroid
 final int Function() nativeHello =
     cryptoLib.lookup<NativeFunction<Int32 Function()>>("hello").asFunction();
 
+final Pointer<Pointer<NTest>> Function() nativeTest = cryptoLib
+    .lookup<NativeFunction<Pointer<Pointer<NTest>> Function()>>(
+        "TestDoublePointer")
+    .asFunction();
+
 final Pointer<NKeyPair> Function() nativeGenerateKeys = cryptoLib
     .lookup<NativeFunction<Pointer<NKeyPair> Function()>>("GenerateKeys")
     .asFunction();

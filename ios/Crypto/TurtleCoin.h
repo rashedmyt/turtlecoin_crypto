@@ -4,6 +4,23 @@
 
 namespace Native
 {
+    struct Hash
+    {
+        uint8_t* data;
+
+        Hash() {
+            data = new uint8_t[32];
+        }
+    };
+
+    struct Test {
+        int data;
+
+        Test() {
+            data = 0;
+        }
+    };
+
     struct PublicKey
     {
         uint8_t* data;

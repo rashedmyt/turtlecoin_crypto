@@ -49,10 +49,15 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: ${fromKeys()}\n'),
+          child: Text('Running on: ${testString()}\n'),
         ),
       ),
     );
+  }
+
+  String testString() {
+    final List<int> res = testNative();
+    return res.toString();
   }
 
   String fromKeys() {

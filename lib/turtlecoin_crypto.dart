@@ -97,3 +97,15 @@ SecretKey deriveSecretKey(
       nativeDeriveSecretKey(nKeyDerivation, outputIndex, nSpendKey);
   return SecretKey.fromNative(res.ref);
 }
+
+List<int> testNative() {
+  Pointer<Pointer<NTest>> res = nativeTest();
+  List<int> data = List<int>();
+
+  while (res != nullptr) {
+    data.add(res.value.ref.data);
+    res = res.elementAt(1);
+  }
+
+  return data;
+}
